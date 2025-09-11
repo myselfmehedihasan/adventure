@@ -2,10 +2,9 @@ import React from "react";
 import { Link, NavLink } from "react-router";
 
 const Navbar = () => {
-
   const navItems = (
     <>
-      <li >
+      <li>
         <NavLink to="/">Home</NavLink>
       </li>
       <li>
@@ -18,7 +17,7 @@ const Navbar = () => {
         <NavLink to="/mylist">My List </NavLink>
       </li>
     </>
-  )
+  );
   return (
     <div className=" bg-accent">
       <div className="navbar max-w-7xl mx-auto">
@@ -46,6 +45,12 @@ const Navbar = () => {
               className=" menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
             >
               {navItems}
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
+              <li>
+                <Link to="/register">Register</Link>
+              </li>
             </ul>
           </div>
           <a href="/">
@@ -53,27 +58,28 @@ const Navbar = () => {
           </a>
         </div>
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1 text-white">
-           {navItems}
+          <ul className="menu menu-horizontal px-1 text-white gap-5">
+            {navItems}
+
+            {/* • If the user is logged in, show the user's photo (photoURL). 
+  • Hovering over the photo displays the user's displayName. 
+  • Show the “Log out” button for the logged-in user.  */}
+
+            <Link to="/login" className="btn">
+              Login
+            </Link>
+            <Link to="/register" className="btn">
+              Register
+            </Link>
           </ul>
         </div>
 
-      {/* 
+        {/* 
   • The “Login” and “Register” buttons are conditional. 
   • If the user is not logged in, both “Login” and “Register” buttons are shown.
   • Clicking “Login” redirects the user to the Login page.
   • Clicking “Register” redirects the user to the Register page.
 */}
-        <div className="navbar-end gap-5">
-        
-  {/* • If the user is logged in, show the user's photo (photoURL). 
-  • Hovering over the photo displays the user's displayName. 
-  • Show the “Log out” button for the logged-in user.  */}
-
-
-          <Link to='/login' className="btn">Login</Link>
-          <Link to='/register' className="btn">Register</Link>
-        </div>
       </div>
     </div>
   );
