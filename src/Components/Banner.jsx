@@ -5,28 +5,54 @@ import slider2 from "../assets/Slider/slider2.jpg";
 import slider3 from "../assets/Slider/slider3.jpg";
 
 const Banner = () => {
-  const slides = [slider1, slider2, slider3];
+  // Each slide now has image + title + subtitle + description
+  const slides = [
+    {
+      image: slider1,
+      title: "Explore the Mountains",
+      subtitle: "Adventure awaits you",
+      description:
+        "Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi.",
+    },
+    {
+      image: slider2,
+      title: "Discover the City",
+      subtitle: "Urban vibes",
+     
+      description:
+        "Enjoy the serene beauty of sandy beaches and crystal-clear waters.",
+    },
+    {
+      image: slider3,
+       title: "Relax at the Beach",
+      subtitle: "Feel the sunshine",
+      description:
+        "Experience the bustling city life and vibrant cultural spots.",
+    },
+  ];
+
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Auto-slide every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
+    }, 10000);
     return () => clearInterval(interval);
   }, []);
 
   // Swipe handlers
   const handlers = useSwipeable({
     onSwipedLeft: () => setCurrentSlide((prev) => (prev + 1) % slides.length),
-    onSwipedRight: () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length),
+    onSwipedRight: () =>
+      setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length),
     preventDefaultTouchmoveEvent: true,
     trackMouse: true,
   });
 
   return (
     <div
-      {...handlers} // ✅ attach swipe handlers here
+      {...handlers}
       className="relative hero min-h-screen overflow-hidden touch-pan-y"
     >
       {/* Slides */}
@@ -37,20 +63,18 @@ const Banner = () => {
             index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
           }`}
         >
-          <img src={slide} className="w-full h-full object-cover select-none pointer-events-none" />
+          <img src={slide.image} className="w-full h-full object-cover" />
+          {/* Blackish overlay */}
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
       ))}
 
-      {/* Overlay */}
-      <div className="hero-overlay bg-black/50"></div>
-
-      {/* Hero content */}
+      {/* Dynamic Hero content */}
       <div className="hero-content text-center text-white relative z-20">
         <div className="max-w-md">
-          <h1 className="mb-5 text-5xl font-bold">Hello there</h1>
-          <p className="mb-5">
-            Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.
-          </p>
+          <p className="text-lg mb-2">{slides[currentSlide].subtitle}</p>
+          <h1 className="mb-5 text-5xl font-bold">{slides[currentSlide].title}</h1>
+          <p className="mb-5 text-xl">{slides[currentSlide].description}</p>
           <button className="btn btn-primary">Get Started</button>
         </div>
       </div>
