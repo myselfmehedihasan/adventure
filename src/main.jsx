@@ -10,17 +10,19 @@ import Register from "./Pages/Register.jsx";
 import AddTouristsSpot from "./Pages/AddTouristsSpot.jsx";
 import MyList from "./Pages/MyList.jsx";
 import AuthProviders from "./providers/AuthProviders.jsx";
+import Home from "./Pages/Home.jsx";
+
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App></App>,
+    element: <App />,
 
     children: [
-      //  {
-      //   path: "/",
-      //   element: <App />, // default home page
-      // },
+       {
+        path: "/",
+        element: <Home></Home>, // default home page
+      },
       {
         path: "/alltouristsspot",
         element: <AllTouristsSpot></AllTouristsSpot>,
@@ -41,10 +43,7 @@ const router = createBrowserRouter([
         path: "register",
         element: <Register />, // register page
       },
-      // {
-      //   path: "*",
-      //   element: <NotFound />, // 404 page
-      // },
+      
     ],
   },
 ]);

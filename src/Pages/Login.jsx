@@ -6,7 +6,7 @@ import { AuthContext } from "../providers/AuthProviders";
 import Swal from "sweetalert2";
 
 const Login = () => {
-  const { signInUser } = useContext(AuthContext);
+  const { signInUser,googleSignIn } = useContext(AuthContext);
 
   const {
     register,
@@ -40,8 +40,14 @@ const Login = () => {
         }
       });
   };
+
+
+  // google login 
+  const handleGoogleLogin = () =>{
+    googleSignIn()
+  }
   return (
-    <div className="  max-w-3xl mx-auto flex-col justify-center items-center">
+    <div className="  max-w-3xl mx-auto flex-col justify-center items-center mt-20">
         <h1 className="text-center text-4xl">Log in and continue your adventure!</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -91,13 +97,10 @@ const Login = () => {
         </form>
 
         <div className="divider">
-        <button className="btn btn-outline hover:btn-accent ">
-          Continue with <FcGoogle />
-        </button>
-        <button className="btn btn-outline hover:btn-accent">
-          Continue with <FaGithub />
-        </button>
-      </div>
+                        <button onClick={handleGoogleLogin} className="btn btn-outline hover:btn-accent ">
+                         <FcGoogle /> Continue with Google 
+                        </button>
+                    </div>
       
       
     </div>

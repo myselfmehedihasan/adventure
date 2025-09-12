@@ -4,9 +4,10 @@ import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { AuthContext } from "../providers/AuthProviders";
 import Swal from "sweetalert2";
+import { signInWithPopup } from "firebase/auth";
 
 const Register = () => {
-  const { createUser } = useContext(AuthContext);
+  const { createUser,googleSignIn } = useContext(AuthContext);
 
   // React Hook Form setup
   const {
@@ -52,6 +53,11 @@ const Register = () => {
 
   // watch password for confirm password check
   const password = watch("password");
+
+  // google login 
+  const handleGoogleLogin = () =>{
+    googleSignIn()
+  }
 
   return (
     <div>
@@ -152,12 +158,10 @@ const Register = () => {
 
             
               <div className="divider">
-                <button className="btn btn-outline hover:btn-accent ">
-                  Continue with <FcGoogle />
+                <button onClick={handleGoogleLogin} className="btn btn-outline hover:btn-accent ">
+                 <FcGoogle /> Continue with Google 
                 </button>
-                <button className="btn btn-outline hover:btn-accent">
-                  Continue with <FaGithub />
-                </button>
+                
               
             </div>
           </div>
