@@ -1,24 +1,37 @@
-import React, { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router";
-// ✅ use react-router-dom for navigation inside React SPA
+import React, { useEffect, useState, useContext } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom"; // FIXED import!
+import { AuthContext } from "../providers/AuthProviders";
+import { getAuth, signOut } from "firebase/auth";
+import app from "../Firebase/firebase.init";
+
+// Initialize Firebase Auth
+const auth = getAuth(app);
 
 const Navbar = () => {
+  // State for scroll background
   const [isScrolled, setScrolled] = useState(false);
 
-  // detect scrolling
+  // Get user from context
+  const { user } = useContext(AuthContext);
+
+  // Get current route
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+
+  // Scroll effect (only for home)
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.screenY > 5) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
+    if (!isHome) return;
+    const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isHome]);
 
-  // ✅ Your reusable nav items
+  // Logout handler
+  const handleLogout = () => {
+    signOut(auth).catch(console.error);
+  };
+
+  // Navigation items
   const navItems = (
     <>
       <li>
@@ -36,26 +49,27 @@ const Navbar = () => {
     </>
   );
 
+  // Set background: transparent on home (until scrolled), black/50 elsewhere
+  const navBg = isHome
+    ? isScrolled
+      ? "bg-black/50"
+      : "bg-black/0"
+    : "bg-black/50";
+
   return (
-    // ✅ Make navbar fixed at top, transparent, always above hero (z-50)
-    <div className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300  ${
-        isScrolled ? "bg-black/50" : "bg-black/40"
-      } backdrop-blur-sm`}>
-      {/* ✅ Centered container, text color white so visible on hero */}
-      <div className="navbar max-w-7xl mx-auto ">
-        {/* ✅ Navbar Start (Logo + Mobile Menu) */}
+    <div
+      className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 backdrop-blur-sm ${navBg}`}
+    >
+      <div className="navbar max-w-7xl mx-auto transition-colors duration-300">
+        {/* Navbar start: logo and mobile dropdown */}
         <div className="navbar-start">
-          {/* Mobile Dropdown Menu */}
+          {/* Dropdown for mobile view */}
           <div className="dropdown">
-            {/* Mobile hamburger icon */}
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost lg:hidden text-white"
-            >
+            <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+              {/* Hamburger icon */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
+                className="h-5 w-5 text-white"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -68,41 +82,70 @@ const Navbar = () => {
                 />
               </svg>
             </div>
-
-            {/* ✅ Mobile dropdown menu items */}
+            {/* Dropdown menu for mobile */}
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-content rounded-box z-50 mt-3 w-52 p-2 shadow"
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow"
             >
               {navItems}
-              {/* Extra links only for mobile */}
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-              <li>
-                <Link to="/register">Register</Link>
-              </li>
             </ul>
           </div>
-
-          {/* ✅ Logo (changed from <a> → <Link>) */}
+          {/* Logo */}
           <Link to="/">
-            <img src="/src/assets/logo.png" alt="Logo"  />
+            <img src="/src/assets/logo.png" alt="Logo" />
           </Link>
         </div>
-
-        {/* ✅ Navbar Center (Desktop Menu) */}
+        {/* Navbar center: menu for large screens */}
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 gap-5 text-white">
             {navItems}
-            {/* Conditional login/register will go here */}
-            <Link to="/login" className="btn btn-sm">
-              Login
-            </Link>
-            <Link to="/register" className="btn btn-sm">
-              Register
-            </Link>
           </ul>
+        </div>
+        {/* Navbar end: Auth Buttons or User Avatar */}
+        <div className="navbar-end">
+          {!user ? (
+            <>
+              <Link to="/login" className="btn btn-sm sm:btn-sm mr-2">
+                Login
+              </Link>
+              <Link to="/register" className="btn btn-sm">
+                Register
+              </Link>
+            </>
+          ) : (
+            <div className="dropdown dropdown-end dropdown-hover">
+              <div
+                tabIndex={0}
+                role="button"
+                className="flex items-center gap-2 btn btn-ghost relative"
+              >
+                {user.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt={user.displayName || "User"}
+                    className="w-8 h-8 rounded-full border-2 border-white"
+                  />
+                ) : (
+                  <span className="font-bold text-white">
+                    {user.displayName || user.email}
+                  </span>
+                )}
+              </div>
+              <ul
+                tabIndex={0}
+                className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-44 transition-all duration-200 "
+              >
+                <li>
+                  <span className="font-bold text-center ">
+                    {user.displayName || user.email}
+                  </span>
+                </li>
+                <li>
+                  <button onClick={handleLogout}>Logout</button>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -45,6 +45,16 @@ const Login = () => {
   // google login 
   const handleGoogleLogin = () =>{
     googleSignIn()
+   .then((result) =>{
+    if(result.user.uid){
+      Swal.fire({
+        icon: "success",
+        title: "You have successfully Login!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+    })
   }
   return (
     <div className="  max-w-3xl mx-auto flex-col justify-center items-center mt-20">

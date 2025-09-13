@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import app from "../Firebase/firebase.init";
 import {
   createUserWithEmailAndPassword,
@@ -6,6 +6,7 @@ import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
+  onAuthStateChanged, // <-- Add this import
 } from "firebase/auth";
 
 const auth = getAuth(app);
@@ -16,6 +17,15 @@ const googleProvider = new GoogleAuthProvider();
 const AuthProviders = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Listen for auth state changes (this is required!)
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Create User via email
   const createUser = (email, password) => {
@@ -28,22 +38,13 @@ const AuthProviders = ({ children }) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-// SignIn with Google
+  // SignIn with Google
   const googleSignIn = () => {
+    setLoading(true);
+    return signInWithPopup(auth, googleProvider);
+  };
 
-        signInWithPopup(auth, googleProvider)
-            .then(result => {
-                const loggedInUser = result.user;
-                console.log(loggedInUser);
-                setUser(loggedInUser);
-            })
-            .catch(error => {
-                console.log(error);
-                alert(error);
-            })
-    }
-
-    // Auth providers list
+  // Auth providers list
   const userInfo = {
     user,
     loading,
