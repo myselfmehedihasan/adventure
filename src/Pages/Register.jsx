@@ -4,7 +4,6 @@ import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { AuthContext } from "../providers/AuthProviders";
 import Swal from "sweetalert2";
-import { signInWithPopup } from "firebase/auth";
 
 const Register = () => {
   const { createUser,googleSignIn } = useContext(AuthContext);

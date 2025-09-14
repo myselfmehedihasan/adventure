@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom"; // FIXED import!
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProviders";
 import { getAuth, signOut } from "firebase/auth";
 import app from "../Firebase/firebase.init";
@@ -31,23 +31,36 @@ const Navbar = () => {
     signOut(auth).catch(console.error);
   };
 
-  // Navigation items
-  const navItems = (
-    <>
-      <li>
-        <NavLink to="/">Home</NavLink>
-      </li>
-      <li>
-        <NavLink to="/alltouristsspot">All Tourists Spot</NavLink>
-      </li>
-      <li>
-        <NavLink to="/addtouristsspot">Add Tourists Spot</NavLink>
-      </li>
-      <li>
-        <NavLink to="/mylist">My List</NavLink>
-      </li>
-    </>
-  );
+  // Navigation items with active highlighting
+ const navLinkClass =
+  ({ isActive }) =>
+    "px-3 py-1 rounded transition " +
+    (isActive ? "font-bold underline underline-offset-4 " : "hover:bg-gray-200/20 ") ;
+
+const navItems = (
+  <>
+    <li>
+      <NavLink to="/" className={navLinkClass}>
+        Home
+      </NavLink>
+    </li>
+    <li>
+      <NavLink to="/alltouristsspot" className={navLinkClass}>
+        All Tourists Spot
+      </NavLink>
+    </li>
+    <li>
+      <NavLink to="/addtouristsspot" className={navLinkClass}>
+        Add Tourists Spot
+      </NavLink>
+    </li>
+    <li>
+      <NavLink to="/mylist" className={navLinkClass}>
+        My List
+      </NavLink>
+    </li>
+  </>
+);
 
   // Set background: transparent on home (until scrolled), black/50 elsewhere
   const navBg = isHome
