@@ -11,7 +11,7 @@ import AddTouristsSpot from "./Pages/AddTouristsSpot.jsx";
 import MyList from "./Pages/MyList.jsx";
 import AuthProviders from "./providers/AuthProviders.jsx";
 import Home from "./Pages/Home.jsx";
-
+import UpdatePages from "./Pages/UpdatePages.jsx";
 
 const router = createBrowserRouter([
   {
@@ -19,12 +19,13 @@ const router = createBrowserRouter([
     element: <App />,
 
     children: [
-       {
-        path: "/",
+      {
+        index: true,
         element: <Home></Home>, // default home page
       },
       {
         path: "/alltouristsspot",
+        loader:()=> fetch('http://localhost:5000/alltouristspot'),
         element: <AllTouristsSpot></AllTouristsSpot>,
       },
       {
@@ -35,6 +36,11 @@ const router = createBrowserRouter([
         path: "/mylist",
         element: <MyList></MyList>,
       },
+
+      {
+        path: "/updatemylist",
+        element: <UpdatePages></UpdatePages>,
+      },
       {
         path: "login",
         element: <Login />, // login page
@@ -43,7 +49,6 @@ const router = createBrowserRouter([
         path: "register",
         element: <Register />, // register page
       },
-      
     ],
   },
 ]);

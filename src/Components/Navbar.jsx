@@ -126,17 +126,17 @@ const navItems = (
               </Link>
             </>
           ) : (
-            <div className="dropdown dropdown-end dropdown-hover">
+            <div className="dropdown  dropdown-hover">
               <div
                 tabIndex={0}
                 role="button"
-                className="flex items-center gap-2 btn btn-ghost relative"
+                className="flex items-center gap-2 cursor-pointer relative"
               >
                 {user.photoURL ? (
                   <img
                     src={user.photoURL}
                     alt={user.displayName || "User"}
-                    className="w-8 h-8 rounded-full border-2 border-white"
+                    className="w-8 h-8 rounded-full border-2 border-green-400"
                   />
                 ) : (
                   <span className="font-bold text-white">

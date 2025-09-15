@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../providers/AuthProviders";
+import Swal from "sweetalert2";
 
 const AddTouristsSpot = () => {
   const { user } = useContext(AuthContext) || {};
@@ -14,27 +15,39 @@ const AddTouristsSpot = () => {
 
   const onSubmit = (data) => {
     console.log("Form Submitted:", data);
-    fetch("http://localhost:5000/tourists-spots", {
+    fetch("http://localhost:5000/addtouristspot", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(data),
     })
       .then((res) => res.json())
       .then(() => {
-        alert("Tourist Spot Added Successfully!");
+        Swal.fire({
+          title: "Added to the SuccessFully✅",
+          icon: "success",
+          draggable: true,
+        });
         reset();
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        Swal.fire({
+          icon: "error",
+          title: `OPPSS ... ${err}`,
+          text: "Something went wrong!",
+          footer: '<a href="#">Why do I have this issue?</a>',
+        });
+      });
   };
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-blue-50 shadow-md rounded-xl mt-15">
-      <h2 className="text-3xl font-bold mb-6 text-center">
-        Add Tourists Spot
-      </h2>
-
+      <h2 className="text-3xl font-bold mb-6 text-center">Add Tourists Spot</h2>
+      <p className="text-gray-600 text-center mb-6 max-w-xl mx-auto">
+        Share your favorite travel destination with others! Add details about a
+        tourist spot, including location, attractions, and unique experiences,
+        so travelers can discover and explore new places.
+      </p>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
         {/* Image URL */}
         <fieldset className="w-full space-y-1">
           <label className="block text-sm font-medium">Image URL</label>
