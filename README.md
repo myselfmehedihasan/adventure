@@ -1,6 +1,3 @@
-Got it 🚀 I’ll prepare a **professional and ATS-friendly `README.md`** for your GitHub project based on your **Tourism Management Website** requirements.
-Here’s a complete draft you can directly use (and edit the chosen category/country name as per your project).
-
 ---
 
 # 🌍 Tourism Management Website
