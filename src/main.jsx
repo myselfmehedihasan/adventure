@@ -4,50 +4,67 @@ import "./index.css";
 import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import AllTouristsSpot from "./Pages/allTouristsSpot.jsx";
 import Login from "./Pages/Login.jsx";
 import Register from "./Pages/Register.jsx";
 import AddTouristsSpot from "./Pages/AddTouristsSpot.jsx";
 import MyList from "./Pages/MyList.jsx";
+import UpdatePages from "./Pages/UpdatePages.jsx";
 import AuthProviders from "./providers/AuthProviders.jsx";
 import Home from "./Pages/Home.jsx";
-import UpdatePages from "./Pages/UpdatePages.jsx";
+import PrivateRoute from "./Private/PrivateRoute.jsx";
+import SpotDetails from "./Pages/SpotDetails.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-
     children: [
       {
         index: true,
-        element: <Home></Home>, // default home page
+        // ✅ Attach loader to Home so it can fetch spots
+        loader: async () => {
+          const res = await fetch("http://localhost:5000/alltouristspot");
+          const data = await res.json();
+          // Ensure we always return an array
+          return Array.isArray(data) ? data : data?.spots || [];
+        },
+        element: <Home />, // default home page
       },
       {
-        path: "/alltouristsspot",
-        loader:()=> fetch('http://localhost:5000/alltouristspot'),
-        element: <AllTouristsSpot></AllTouristsSpot>,
+        path: "/spots/:id",
+        element: (
+          <PrivateRoute>
+            <SpotDetails />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/addtouristsspot",
-        element: <AddTouristsSpot></AddTouristsSpot>,
+        element: (
+          <PrivateRoute>
+            <AddTouristsSpot />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/mylist",
-        element: <MyList></MyList>,
+        element: (
+          <PrivateRoute>
+            <MyList />
+          </PrivateRoute>
+        ),
       },
-
       {
         path: "/updatemylist",
-        element: <UpdatePages></UpdatePages>,
+        element: <UpdatePages />,
       },
       {
         path: "login",
-        element: <Login />, // login page
+        element: <Login />,
       },
       {
         path: "register",
-        element: <Register />, // register page
+        element: <Register />,
       },
     ],
   },
@@ -55,7 +72,6 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    {/* <App /> */}
     <AuthProviders>
       <RouterProvider router={router} />
     </AuthProviders>

@@ -1,24 +1,25 @@
 import React, { createContext, useState, useEffect } from "react";
 import app from "../Firebase/firebase.init";
 import {
-  createUserWithEmailAndPassword,
   getAuth,
-  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  GoogleAuthProvider,
   signInWithPopup,
-  onAuthStateChanged, // <-- Add this import
+  onAuthStateChanged,
+  fetchSignInMethodsForEmail,
 } from "firebase/auth";
 
-const auth = getAuth(app);
 export const AuthContext = createContext(null);
 
+const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
 const AuthProviders = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Listen for auth state changes (this is required!)
+  // Listen for auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -27,34 +28,55 @@ const AuthProviders = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  // Create User via email
+  // ---------------- Email/Password Registration ----------------
   const createUser = (email, password) => {
     setLoading(true);
-    return createUserWithEmailAndPassword(auth, email, password);
+    return createUserWithEmailAndPassword(auth, email, password)
+      .finally(() => setLoading(false));
   };
-  // SignIn user with email
+
+  // ---------------- Email/Password Login ----------------
   const signInUser = (email, password) => {
     setLoading(true);
-    return signInWithEmailAndPassword(auth, email, password);
+    return signInWithEmailAndPassword(auth, email, password)
+      .finally(() => setLoading(false));
   };
 
-  // SignIn with Google
-  const googleSignIn = () => {
+  // ---------------- Google SignIn ----------------
+  const googleSignIn = async () => {
     setLoading(true);
-    return signInWithPopup(auth, googleProvider);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+
+      // Check if email is already registered with another method
+      const email = result.user.email;
+      const methods = await fetchSignInMethodsForEmail(auth, email);
+      const otherMethods = methods.filter((m) => m !== "google.com");
+
+      if (otherMethods.length) {
+        await auth.signOut(); // logout this Google session
+        throw new Error(
+          "This email is already registered with another login method."
+        );
+      }
+
+      return result;
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Auth providers list
-  const userInfo = {
+  const value = {
     user,
     loading,
     createUser,
     signInUser,
     googleSignIn,
   };
-  return (
-    <AuthContext.Provider value={userInfo}>{children}</AuthContext.Provider>
-  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export default AuthProviders;

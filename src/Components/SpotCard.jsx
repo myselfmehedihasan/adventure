@@ -26,7 +26,6 @@ const SpotCard = ({ spot }) => {
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-100">
-      
       {/* Image Section */}
       <div className="relative h-48 overflow-hidden">
         <img
@@ -44,7 +43,6 @@ const SpotCard = ({ spot }) => {
 
       {/* Card Content */}
       <div className="p-5">
-        
         {/* Spot Title */}
         <h3 className="text-lg font-bold text-gray-800 mb-3 line-clamp-2">
           {spot.tourists_spot_name}
@@ -61,7 +59,9 @@ const SpotCard = ({ spot }) => {
           {/* Total Visitors per Year */}
           <div className="flex items-center text-sm text-gray-600">
             <Users className="w-4 h-4 mr-2 text-blue-600" />
-            <span>{formatVisitors(spot.totaVisitorsPerYear)} visitors/year</span>
+            <span>
+              {formatVisitors(spot.totaVisitorsPerYear)} visitors/year
+            </span>
           </div>
 
           {/* Travel Time */}
@@ -79,11 +79,10 @@ const SpotCard = ({ spot }) => {
 
         {/* View Details Button */}
         <Link
-          to={`/spots/${spot._id}`} // Redirects to spot detail page
-          className="w-full  bg-black/50 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 group hover:scale-105"
+          to={`/spots/${spot._id}`}
+          className="w-full bg-black/50 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 hover:bg-[#35577D] transition-transform"
         >
-          <Eye className="w-4 h-4 group-hover:scale-110 transition-transform" />
-          View Details
+          <Eye className="w-4 h-4" /> View Details
         </Link>
       </div>
     </div>

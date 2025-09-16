@@ -1,14 +1,27 @@
 import React from "react";
-import Navbar from "../Components/Navbar";
-import Banner from "../Components/Banner";
+import { useLoaderData } from "react-router-dom";
 import SimpleSlider from "../Components/SimpleSlider";
+import Banner from "../Components/Banner";
+import AllTouristsSpot from "./AllTouristsSpot";
 
 const Home = () => {
+  // ✅ Loader provides tourist spots
+  const allSpot = useLoaderData();
+
   return (
     <div>
-      {/* <Navbar></Navbar> */}
-      <SimpleSlider></SimpleSlider>
-      {/* <Banner></Banner> */}
+      {/* Home Section */}
+      <section id="home">
+        <SimpleSlider />
+        
+      </section>
+
+      {/* All Tourist Spot Section */}
+      <section id="all-tourist-spot" className="pt-24 -mt-24">
+        <AllTouristsSpot allSpot={allSpot} />
+      </section>
+
+      
     </div>
   );
 };

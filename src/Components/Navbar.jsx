@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProviders";
 import { getAuth, signOut } from "firebase/auth";
 import app from "../Firebase/firebase.init";
@@ -8,78 +8,172 @@ import app from "../Firebase/firebase.init";
 const auth = getAuth(app);
 
 const Navbar = () => {
-  // State for scroll background
-  const [isScrolled, setScrolled] = useState(false);
-
-  // Get user from context
+  const [isScrolled, setScrolled] = useState(false); // for shrinking navbar
+  const [activeSection, setActiveSection] = useState("home"); // track section on home
   const { user } = useContext(AuthContext);
 
-  // Get current route
   const location = useLocation();
-  const isHome = location.pathname === "/";
+  const navigate = useNavigate();
+  const isHome = location.pathname === "/"; // check if current page is Home
 
-  // Scroll effect (only for home)
+  // ------------------------------
+  // Shrink navbar when scrolling on Home page
+  // ------------------------------
   useEffect(() => {
-    if (!isHome) return;
+    if (!isHome) return; // only run on Home
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isHome]);
 
-  // Logout handler
-  const handleLogout = () => {
-    signOut(auth).catch(console.error);
+  // ------------------------------
+  // Scroll spy (detect which section is in view on Home page)
+  // ------------------------------
+  useEffect(() => {
+    if (!isHome) return; // only run on Home
+
+    const sections = document.querySelectorAll("section[id]");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id); // update active section
+          }
+        });
+      },
+      { threshold: 0.6 } // trigger when 60% of section is visible
+    );
+
+    sections.forEach((sec) => observer.observe(sec));
+    return () => sections.forEach((sec) => observer.unobserve(sec));
+  }, [isHome]);
+
+  // ------------------------------
+  // Logout
+  // ------------------------------
+  const handleLogout = () => signOut(auth).catch(console.error);
+
+  // ------------------------------
+  // Smooth scroll for sections
+  // ------------------------------
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const yOffset = isScrolled ? -56 : -80; // adjust for navbar height
+      const y =
+        element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
   };
 
-  // Navigation items with active highlighting
- const navLinkClass =
-  ({ isActive }) =>
-    "px-3 py-1 rounded transition " +
-    (isActive ? "font-bold underline underline-offset-4 " : "hover:bg-gray-200/20 ") ;
+  // ------------------------------
+  // NavLink styling function
+  // ------------------------------
+  const navLinkClass = (id, path) => {
+    if (isHome) {
+      // On Home → active depends on scroll position
+      return (
+        "px-3 py-1 rounded transition " +
+        (activeSection === id
+          ? "font-bold underline underline-offset-4 "
+          : "hover:bg-gray-200/20 ")
+      );
+    } else {
+      // On other pages → use React Router's isActive
+      return ({ isActive }) =>
+        "px-3 py-1 rounded transition " +
+        (isActive
+          ? "font-bold underline underline-offset-4 "
+          : "hover:bg-gray-200/20 ");
+    }
+  };
 
-const navItems = (
-  <>
-    <li>
-      <NavLink to="/" className={navLinkClass}>
-        Home
-      </NavLink>
-    </li>
-    <li>
-      <NavLink to="/alltouristsspot" className={navLinkClass}>
-        All Tourists Spot
-      </NavLink>
-    </li>
-    <li>
-      <NavLink to="/addtouristsspot" className={navLinkClass}>
-        Add Tourists Spot
-      </NavLink>
-    </li>
-    <li>
-      <NavLink to="/mylist" className={navLinkClass}>
-        My List
-      </NavLink>
-    </li>
-  </>
-);
-
-  // Set background: transparent on home (until scrolled), black/50 elsewhere
+  // ------------------------------
+  // Navbar background and height
+  // ------------------------------
   const navBg = isHome
     ? isScrolled
-      ? "bg-black/50"
-      : "bg-black/0"
-    : "bg-black/50";
+      ? "bg-black/50 h-14"
+      : "bg-black/0 h-20"
+    : "bg-black/50 h-14";
+
+  // ------------------------------
+  // Navigation items
+  // ------------------------------
+  const navItems = (
+    <>
+      {/* Home link */}
+      <li>
+        <NavLink
+          to="/"
+          className={navLinkClass("home", "/")}
+          onClick={(e) => {
+            if (isHome) {
+              // if already on Home → scroll smoothly
+              e.preventDefault();
+              scrollToSection("home");
+            }
+          }}
+        >
+          Home
+        </NavLink>
+      </li>
+
+      {/* All Tourist Spot link */}
+      <li>
+        <NavLink
+          to="/"
+          className={navLinkClass("all-tourist-spot", "/")}
+          onClick={(e) => {
+            if (isHome) {
+              // On Home → scroll to section
+              e.preventDefault();
+              scrollToSection("all-tourist-spot");
+            } else {
+              // On other page → navigate to Home first, then scroll
+              e.preventDefault();
+              navigate("/");
+              setTimeout(() => scrollToSection("all-tourist-spot"), 200);
+            }
+          }}
+        >
+          All Tourist Spot
+        </NavLink>
+      </li>
+
+      {/* Add Tourist Spot link */}
+      <li>
+        <NavLink
+          to="/addtouristsspot"
+          className={navLinkClass("addtouristsspot", "/addtouristsspot")}
+        >
+          Add Tourist Spot
+        </NavLink>
+      </li>
+
+      {/* My List link */}
+     {
+      user && <>
+       <li>
+        <NavLink to="/mylist" className={navLinkClass("mylist", "/mylist")}>
+          My List
+        </NavLink>
+      </li>
+      </>
+     }
+    </>
+  );
 
   return (
     <div
-      className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 backdrop-blur-sm ${navBg}`}
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 backdrop-blur-sm ${navBg}`}
     >
-      <div className="navbar max-w-7xl mx-auto transition-colors duration-300">
-        {/* Navbar start: logo and mobile dropdown */}
-        <div className="navbar-start">
-          {/* Dropdown for mobile view */}
+      <div className="navbar max-w-7xl mx-auto px-4 transition-all duration-300">
+        {/* ------------------------------ Navbar start: logo & mobile menu ------------------------------ */}
+        <div className="navbar-start flex items-center">
+          {/* Mobile menu */}
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-              {/* Hamburger icon */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5 text-white"
@@ -95,42 +189,43 @@ const navItems = (
                 />
               </svg>
             </div>
-            {/* Dropdown menu for mobile */}
-            <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow"
-            >
+            <ul className="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow">
               {navItems}
             </ul>
           </div>
+
           {/* Logo */}
-          <Link to="/">
-            <img src="/src/assets/logo.png" alt="Logo" />
+          <Link to="/" className="ml-2">
+            <img
+              src="/src/assets/logo.png"
+              alt="Logo"
+              className={`transition-all duration-300`}
+            />
           </Link>
         </div>
-        {/* Navbar center: menu for large screens */}
+
+        {/* ------------------------------ Navbar center: desktop menu ------------------------------ */}
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 gap-5 text-white">
             {navItems}
           </ul>
         </div>
-        {/* Navbar end: Auth Buttons or User Avatar */}
+
+        {/* ------------------------------ Navbar end: auth buttons / user avatar ------------------------------ */}
         <div className="navbar-end">
           {!user ? (
             <>
-              <Link to="/login" className="btn btn-sm sm:btn-sm mr-2">
+              <Link to="/login" className="btn border-none  hover:bg-gray-900 hover:text-white font-bold  sm:btn-sm ">
                 Login
               </Link>
-              <Link to="/register" className="btn btn-sm">
-                Register
-              </Link>
+              
             </>
           ) : (
-            <div className="dropdown  dropdown-hover">
+            <div className="dropdown dropdown-end relative">
               <div
                 tabIndex={0}
                 role="button"
-                className="flex items-center gap-2 cursor-pointer relative"
+                className="flex items-center gap-2 cursor-pointer"
               >
                 {user.photoURL ? (
                   <img
@@ -139,22 +234,26 @@ const navItems = (
                     className="w-8 h-8 rounded-full border-2 border-green-400"
                   />
                 ) : (
-                  <span className="font-bold text-white">
+                  <span className="font-bold text-white truncate">
                     {user.displayName || user.email}
                   </span>
                 )}
               </div>
-              <ul
-                tabIndex={0}
-                className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-44 transition-all duration-200 "
-              >
+
+              <ul className="dropdown-content menu p-3 shadow bg-base-100 rounded-box min-w-52 right-0 absolute z-50">
                 <li>
-                  <span className="font-bold text-center ">
+                  {/* 🔹 Allow wrapping long text */}
+                  <span className="font-bold break-words whitespace-normal block max-w-xs">
                     {user.displayName || user.email}
                   </span>
                 </li>
                 <li>
-                  <button onClick={handleLogout}>Logout</button>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded"
+                  >
+                    Logout
+                  </button>
                 </li>
               </ul>
             </div>
