@@ -20,6 +20,7 @@ const Home = () => {
       <section id="all-tourist-spot" className="pt-24 -mt-24">
         <AllTouristsSpot allSpot={allSpot} />
       </section>
+      
 
       
     </div>
