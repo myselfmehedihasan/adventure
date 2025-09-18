@@ -1,9 +1,17 @@
-
-
 @import "tailwindcss";
- @plugin "daisyui" {
+
+@plugin "daisyui" {
   themes: light --default, dark --prefersdark, cupcake;
 }
+
+html {
+  --cursor-color: #ff6b6b; /* A warm, noticeable coral red */
+}
+html.dark-mode {
+  --cursor-color: #4ade80; /* A soft, neon green */
+}
+
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-synthesis: none;
@@ -20,5 +28,6 @@
 
 /* For Firefox */
 html {
-  scrollbar-width: none; /* hides scrollbar but keeps scroll */
+  scrollbar-width: none;
+  /* hides scrollbar but keeps scroll */
 }

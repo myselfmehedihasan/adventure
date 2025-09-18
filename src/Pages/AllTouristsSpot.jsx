@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import SpotCard from "../Components/SpotCard";
+import { JackInTheBox } from "react-awesome-reveal";
 
 const AllTouristsSpot = ({ allSpot = [] }) => {
   // ✅ Local state for sorting
@@ -29,8 +31,12 @@ const AllTouristsSpot = ({ allSpot = [] }) => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-blue-50 shadow-md rounded-xl mt-5">
-      <h1 className="text-4xl font-bold text-center mb-6">All Tourist Spot</h1>
+    <div className="max-w-7xl mx-auto p-6 bg-blue-50 shadow-md rounded-xl mt-5 my-40">
+      <JackInTheBox triggerOnce duration={1200}>
+        <h1 className="text-4xl font-bold text-center mb-6">
+          All Tourist Spot
+        </h1>
+      </JackInTheBox>
 
       {/* Sort Dropdown */}
       <div className="flex flex-col md:flex-row justify-center items-center mb-6 gap-2 md:gap-4">
@@ -57,7 +63,17 @@ const AllTouristsSpot = ({ allSpot = [] }) => {
       {/* Grid of cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {Array.isArray(sortedSpots) && sortedSpots.length > 0 ? (
-          sortedSpots.map((spot) => <SpotCard key={spot._id} spot={spot} />)
+          sortedSpots.map((spot) => (
+            <motion.div
+              key={spot._id}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 300 }}
+              className="h-full"
+            >
+              <SpotCard spot={spot} />
+            </motion.div>
+          ))
         ) : (
           <p className="text-center col-span-3 text-gray-600">
             No tourist spots available.

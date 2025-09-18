@@ -112,7 +112,7 @@ const SpotDetails = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent "></div>
 
         {/* Floating Title Card */}
-        <div className="absolute bottom-4 md:bottom-8 left-8    w-96 p-4 rounded-lg">
+        <div className="absolute  md:bottom-8 top-30 w-90 p-4 rounded-lg">
 
 
           <div className="backdrop-blur-sm rounded-lg p-2 shadow-sm">

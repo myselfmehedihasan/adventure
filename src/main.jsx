@@ -8,11 +8,24 @@ import Login from "./Pages/Login.jsx";
 import Register from "./Pages/Register.jsx";
 import AddTouristsSpot from "./Pages/AddTouristsSpot.jsx";
 import MyList from "./Pages/MyList.jsx";
-import UpdatePages from "./Pages/UpdatePages.jsx";
+import UpdatePages from "./Components/UpdateSpotModal.jsx";
 import AuthProviders from "./providers/AuthProviders.jsx";
 import Home from "./Pages/Home.jsx";
 import PrivateRoute from "./Private/PrivateRoute.jsx";
 import SpotDetails from "./Pages/SpotDetails.jsx";
+
+import { motion, AnimatePresence } from "framer-motion";
+
+const withTransition = (Component) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -20 }}
+    transition={{ duration: .75 }}
+  >
+    <Component />
+  </motion.div>
+);
 
 const router = createBrowserRouter([
   {
@@ -21,20 +34,18 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        // ✅ Attach loader to Home so it can fetch spots
         loader: async () => {
           const res = await fetch("http://localhost:5000/alltouristspot");
           const data = await res.json();
-          // Ensure we always return an array
           return Array.isArray(data) ? data : data?.spots || [];
         },
-        element: <Home />, // default home page
+        element: withTransition(Home), // ✅ smooth transition
       },
       {
         path: "/spots/:id",
         element: (
           <PrivateRoute>
-            <SpotDetails />
+            {withTransition(SpotDetails)}
           </PrivateRoute>
         ),
       },
@@ -42,7 +53,7 @@ const router = createBrowserRouter([
         path: "/addtouristsspot",
         element: (
           <PrivateRoute>
-            <AddTouristsSpot />
+            {withTransition(AddTouristsSpot)}
           </PrivateRoute>
         ),
       },
@@ -50,21 +61,17 @@ const router = createBrowserRouter([
         path: "/mylist",
         element: (
           <PrivateRoute>
-            <MyList />
+            {withTransition(MyList)}
           </PrivateRoute>
         ),
       },
       {
-        path: "/updatemylist",
-        element: <UpdatePages />,
-      },
-      {
         path: "login",
-        element: <Login />,
+        element: withTransition(Login),
       },
       {
         path: "register",
-        element: <Register />,
+        element: withTransition(Register),
       },
     ],
   },
@@ -73,7 +80,9 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProviders>
-      <RouterProvider router={router} />
+      <AnimatePresence mode="wait">
+        <RouterProvider router={router} />
+      </AnimatePresence>
     </AuthProviders>
   </StrictMode>
 );

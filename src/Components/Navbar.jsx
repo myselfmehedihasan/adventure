@@ -41,7 +41,7 @@ const Navbar = () => {
           }
         });
       },
-      { threshold: 0.6 } // trigger when 60% of section is visible
+      { threshold: 0.4 } // trigger when 60% of section is visible
     );
 
     sections.forEach((sec) => observer.observe(sec));
@@ -152,15 +152,15 @@ const Navbar = () => {
       </li>
 
       {/* My List link */}
-     {
-      user && <>
-       <li>
-        <NavLink to="/mylist" className={navLinkClass("mylist", "/mylist")}>
-          My List
-        </NavLink>
-      </li>
-      </>
-     }
+      {user && (
+        <>
+          <li>
+            <NavLink to="/mylist" className={navLinkClass("mylist", "/mylist")}>
+              My List
+            </NavLink>
+          </li>
+        </>
+      )}
     </>
   );
 
@@ -215,10 +215,12 @@ const Navbar = () => {
         <div className="navbar-end">
           {!user ? (
             <>
-              <Link to="/login" className="btn border-none  hover:bg-gray-900 hover:text-white font-bold  sm:btn-sm ">
+              <Link
+                to="/login"
+                className="btn border-none  hover:bg-gray-900 hover:text-white font-bold  sm:btn-sm "
+              >
                 Login
               </Link>
-              
             </>
           ) : (
             <div className="dropdown dropdown-end relative">
@@ -231,13 +233,19 @@ const Navbar = () => {
                   <img
                     src={user.photoURL}
                     alt={user.displayName || "User"}
+                    referrerPolicy="no-referrer" // 🔹 Fixes Google broken image issue
                     className="w-8 h-8 rounded-full border-2 border-green-400"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "/default-avatar.png"; // 🔹 fallback image in /public
+                    }}
                   />
                 ) : (
                   <span className="font-bold text-white truncate">
                     {user.displayName || user.email}
                   </span>
                 )}
+                
               </div>
 
               <ul className="dropdown-content menu p-3 shadow bg-base-100 rounded-box min-w-52 right-0 absolute z-50">
