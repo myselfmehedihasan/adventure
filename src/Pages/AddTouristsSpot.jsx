@@ -127,7 +127,7 @@ const AddTouristsSpot = () => {
   );
 
   return (
-    <div className="min-h-screen mt-5  bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-3">
+    <div className="min-h-screen mt-5  bg-tr py-8 px-3">
       <div className="max-w-5xl mx-auto mt-5">
         {/* Header */}
         <div className="text-center mb-8">
@@ -174,8 +174,7 @@ const AddTouristsSpot = () => {
               label="Image URL"
               icon={Camera}
               name="image"
-              placeholder="  example.com/image.jpg"
-              prefix="https://"
+              placeholder="https://example.com/image.jpg"
             />
             <InputField
               label="Description"

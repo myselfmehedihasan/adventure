@@ -4,12 +4,6 @@
   themes: light --default, dark --prefersdark, cupcake;
 }
 
-html {
-  --cursor-color: #ff6b6b; /* A warm, noticeable coral red */
-}
-html.dark-mode {
-  --cursor-color: #4ade80; /* A soft, neon green */
-}
 
 
 :root {
@@ -30,4 +24,28 @@ html.dark-mode {
 html {
   scrollbar-width: none;
   /* hides scrollbar but keeps scroll */
+}
+
+@keyframes rain-bg {
+  0% {
+    background-position:
+      0px 220px,
+      3px 220px,
+      151.5px 337.5px,
+      25px 24px,
+      28px 24px;
+  }
+
+  100% {
+    background-position:
+      0px 6800px,
+      3px 6800px,
+      151.5px 6917.5px,
+      25px 13632px,
+      28px 13632px;
+  }
+}
+
+.animate-rain-bg {
+  animation: rain-bg 150s linear infinite;
 }

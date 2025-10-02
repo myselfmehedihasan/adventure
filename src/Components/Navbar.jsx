@@ -8,98 +8,84 @@ import app from "../Firebase/firebase.init";
 const auth = getAuth(app);
 
 const Navbar = () => {
-  const [isScrolled, setScrolled] = useState(false); // for shrinking navbar
-  const [activeSection, setActiveSection] = useState("home"); // track section on home
-  const { user } = useContext(AuthContext);
+  const [isScrolled, setScrolled] = useState(false); // Track if page is scrolled to shrink navbar
+  const [activeSection, setActiveSection] = useState("home"); // Track active section on home page
+  const { user } = useContext(AuthContext); // Get current user from Auth Context
 
   const location = useLocation();
   const navigate = useNavigate();
-  const isHome = location.pathname === "/"; // check if current page is Home
+  const isHome = location.pathname === "/"; // Check if current page is Home
 
-  // ------------------------------
-  // Shrink navbar when scrolling on Home page
-  // ------------------------------
+  // Shrink navbar on scroll (only on home page)
   useEffect(() => {
-    if (!isHome) return; // only run on Home
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    if (!isHome) return;
+    const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isHome]);
 
-  // ------------------------------
-  // Scroll spy (detect which section is in view on Home page)
-  // ------------------------------
+  // Observe sections on home page to highlight active nav link
   useEffect(() => {
-    if (!isHome) return; // only run on Home
-
+    if (!isHome) return;
     const sections = document.querySelectorAll("section[id]");
+
     const observer = new IntersectionObserver(
-      (entries) => {
+      (entries) =>
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id); // update active section
-          }
-        });
-      },
-      { threshold: 0.4 } // trigger when 60% of section is visible
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        }),
+      { threshold: 0.4 }
     );
 
     sections.forEach((sec) => observer.observe(sec));
     return () => sections.forEach((sec) => observer.unobserve(sec));
   }, [isHome]);
 
-  // ------------------------------
-  // Logout
-  // ------------------------------
+  // Logout function
   const handleLogout = () => signOut(auth).catch(console.error);
 
-  // ------------------------------
-  // Smooth scroll for sections
-  // ------------------------------
+  // Scroll smoothly to a specific section
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
     if (element) {
-      const yOffset = isScrolled ? -56 : -80; // adjust for navbar height
+      const yOffset = isScrolled ? 56 : 80; // Adjust for navbar height
       const y =
-        element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        element.getBoundingClientRect().top + window.pageYOffset - yOffset;
       window.scrollTo({ top: y, behavior: "smooth" });
     }
   };
 
-  // ------------------------------
-  // NavLink styling function
-  // ------------------------------
-  const navLinkClass = (id, path) => {
-    if (isHome) {
-      // On Home → active depends on scroll position
-      return (
-        "px-3 py-1 rounded transition " +
-        (activeSection === id
-          ? "font-bold underline underline-offset-4 "
-          : "hover:bg-gray-200/20 ")
-      );
+  // Scroll to top of home page
+  const scrollToTop = () => {
+    const sliderElement = document.getElementById("home");
+    if (sliderElement) {
+      sliderElement.scrollIntoView({ behavior: "smooth" });
     } else {
-      // On other pages → use React Router's isActive
-      return ({ isActive }) =>
-        "px-3 py-1 rounded transition " +
-        (isActive
-          ? "font-bold underline underline-offset-4 "
-          : "hover:bg-gray-200/20 ");
+      console.error("Slider section not found!");
     }
   };
 
-  // ------------------------------
-  // Navbar background and height
-  // ------------------------------
+  // Determine classes for nav links
+  const navLinkClass = (id, path) =>
+    isHome
+      ? "px-3 py-1 rounded transition " +
+        (activeSection === id
+          ? "font-bold underline underline-offset-4 "
+          : "hover:bg-gray-200/20 ")
+      : ({ isActive }) =>
+          "px-3 py-1 rounded transition " +
+          (isActive
+            ? "font-bold underline underline-offset-4 "
+            : "hover:bg-gray-200/20 ");
+
+  // Determine navbar background and height based on scroll
   const navBg = isHome
     ? isScrolled
       ? "bg-black/50 h-14"
       : "bg-black/0 h-20"
     : "bg-black/50 h-14";
 
-  // ------------------------------
-  // Navigation items
-  // ------------------------------
+  // All navbar items
   const navItems = (
     <>
       {/* Home link */}
@@ -108,10 +94,11 @@ const Navbar = () => {
           to="/"
           className={navLinkClass("home", "/")}
           onClick={(e) => {
-            if (isHome) {
-              // if already on Home → scroll smoothly
-              e.preventDefault();
-              scrollToSection("home");
+            e.preventDefault();
+            if (isHome) scrollToTop();
+            else {
+              navigate("/");
+              setTimeout(() => scrollToTop(), 200);
             }
           }}
         >
@@ -119,19 +106,15 @@ const Navbar = () => {
         </NavLink>
       </li>
 
-      {/* All Tourist Spot link */}
+      {/* All Tourist Spot section link */}
       <li>
         <NavLink
           to="/"
           className={navLinkClass("all-tourist-spot", "/")}
           onClick={(e) => {
-            if (isHome) {
-              // On Home → scroll to section
-              e.preventDefault();
-              scrollToSection("all-tourist-spot");
-            } else {
-              // On other page → navigate to Home first, then scroll
-              e.preventDefault();
+            e.preventDefault();
+            if (isHome) scrollToSection("all-tourist-spot");
+            else {
               navigate("/");
               setTimeout(() => scrollToSection("all-tourist-spot"), 200);
             }
@@ -141,7 +124,7 @@ const Navbar = () => {
         </NavLink>
       </li>
 
-      {/* Add Tourist Spot link */}
+      {/* Add Tourist Spot page link */}
       <li>
         <NavLink
           to="/addtouristsspot"
@@ -151,15 +134,43 @@ const Navbar = () => {
         </NavLink>
       </li>
 
-      {/* My List link */}
+      {/* Country section link */}
+      <li>
+        <NavLink
+          to="/"
+          className={navLinkClass("country", "/")}
+          onClick={(e) => {
+            e.preventDefault();
+            if (isHome) scrollToSection("country");
+            else {
+              navigate("/");
+              setTimeout(() => scrollToSection("country"), 200);
+            }
+          }}
+        >
+          Country
+        </NavLink>
+      </li>
+
+      {/* Protected My List page link */}
       {user && (
-        <>
-          <li>
-            <NavLink to="/mylist" className={navLinkClass("mylist", "/mylist")}>
-              My List
-            </NavLink>
-          </li>
-        </>
+        <li>
+          <NavLink to="/mylist" className={navLinkClass("mylist", "/mylist")}>
+            My List
+          </NavLink>
+        </li>
+      )}
+
+      {/* Protected Add Country page link */}
+      {user && (
+        <li>
+          <NavLink
+            to="/addcountry"
+            className={navLinkClass("AddCountry", "/addcountry")}
+          >
+            Add Country
+          </NavLink>
+        </li>
       )}
     </>
   );
@@ -169,9 +180,9 @@ const Navbar = () => {
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 backdrop-blur-sm ${navBg}`}
     >
       <div className="navbar max-w-7xl mx-auto px-4 transition-all duration-300">
-        {/* ------------------------------ Navbar start: logo & mobile menu ------------------------------ */}
+        {/* Navbar start: logo + mobile dropdown */}
         <div className="navbar-start flex items-center">
-          {/* Mobile menu */}
+          {/* Mobile menu dropdown */}
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
               <svg
@@ -195,34 +206,45 @@ const Navbar = () => {
           </div>
 
           {/* Logo */}
-          <Link to="/" className="ml-2">
+          <Link
+            to="/"
+            className="ml-2"
+            onClick={(e) => {
+              e.preventDefault();
+              if (isHome) scrollToTop();
+              else {
+                navigate("/");
+                setTimeout(() => scrollToTop(), 200);
+              }
+            }}
+          >
             <img
               src="/src/assets/logo.png"
               alt="Logo"
-              className={`transition-all duration-300`}
+              className="transition-all duration-300"
             />
           </Link>
         </div>
 
-        {/* ------------------------------ Navbar center: desktop menu ------------------------------ */}
+        {/* Navbar center: desktop menu */}
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 gap-5 text-white">
             {navItems}
           </ul>
         </div>
 
-        {/* ------------------------------ Navbar end: auth buttons / user avatar ------------------------------ */}
+        {/* Navbar end: login/logout */}
         <div className="navbar-end">
           {!user ? (
-            <>
-              <Link
-                to="/login"
-                className="btn border-none  hover:bg-gray-900 hover:text-white font-bold  sm:btn-sm "
-              >
-                Login
-              </Link>
-            </>
+            // Login button for guests
+            <Link
+              to="/login"
+              className="btn border-none hover:bg-gray-900 hover:text-white font-bold sm:btn-sm"
+            >
+              Login
+            </Link>
           ) : (
+            // User dropdown when logged in
             <div className="dropdown dropdown-end relative">
               <div
                 tabIndex={0}
@@ -230,27 +252,24 @@ const Navbar = () => {
                 className="flex items-center gap-2 cursor-pointer"
               >
                 {user.photoURL ? (
+                  // Display profile photo if available
                   <img
                     src={user.photoURL}
                     alt={user.displayName || "User"}
-                    referrerPolicy="no-referrer" // 🔹 Fixes Google broken image issue
+                    referrerPolicy="no-referrer"
                     className="w-8 h-8 rounded-full border-2 border-green-400"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = "/default-avatar.png"; // 🔹 fallback image in /public
-                    }}
                   />
                 ) : (
+                  // Otherwise display user name/email
                   <span className="font-bold text-white truncate">
                     {user.displayName || user.email}
                   </span>
                 )}
-                
               </div>
 
+              {/* Dropdown menu for logout */}
               <ul className="dropdown-content menu p-3 shadow bg-base-100 rounded-box min-w-52 right-0 absolute z-50">
                 <li>
-                  {/* 🔹 Allow wrapping long text */}
                   <span className="font-bold break-words whitespace-normal block max-w-xs">
                     {user.displayName || user.email}
                   </span>

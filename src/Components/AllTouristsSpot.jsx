@@ -4,9 +4,11 @@ import SpotCard from "../Components/SpotCard";
 import { JackInTheBox } from "react-awesome-reveal";
 
 const AllTouristsSpot = ({ allSpot = [] }) => {
-  // ✅ Local state for sorting
   const [sortedSpots, setSortedSpots] = useState([...allSpot]);
   const [sortOrder, setSortOrder] = useState("default");
+
+  // ✅ Number of cards to show
+  const [visibleCount, setVisibleCount] = useState(6);
 
   // ✅ Re-sort whenever sortOrder or allSpot changes
   useEffect(() => {
@@ -15,23 +17,26 @@ const AllTouristsSpot = ({ allSpot = [] }) => {
     let sorted = [...allSpot];
 
     if (sortOrder === "asc") {
-      // Sort from low → high
       sorted.sort((a, b) => a.average_cost - b.average_cost);
     } else if (sortOrder === "desc") {
-      // Sort from high → low
       sorted.sort((a, b) => b.average_cost - a.average_cost);
     }
 
     setSortedSpots(sorted);
   }, [sortOrder, allSpot]);
 
-  // ✅ Handle dropdown change
   const handleSortChange = (e) => {
     setSortOrder(e.target.value);
+    setVisibleCount(6); // Reset visible count on sort
+  };
+
+  // ✅ Show more button handler
+  const handleShowMore = () => {
+    setVisibleCount((prev) => prev + 12);
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-blue-50 shadow-md rounded-xl mt-5 my-40">
+    <div className="max-w-7xl mx-auto p-6 bg-transparent shadow-md rounded-xl mt-5 my-40">
       <JackInTheBox triggerOnce duration={1200}>
         <h1 className="text-4xl font-bold text-center mb-6">
           All Tourist Spot
@@ -63,7 +68,7 @@ const AllTouristsSpot = ({ allSpot = [] }) => {
       {/* Grid of cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {Array.isArray(sortedSpots) && sortedSpots.length > 0 ? (
-          sortedSpots.map((spot) => (
+          sortedSpots.slice(0, visibleCount).map((spot) => (
             <motion.div
               key={spot._id}
               whileHover={{ scale: 1.02 }}
@@ -80,6 +85,18 @@ const AllTouristsSpot = ({ allSpot = [] }) => {
           </p>
         )}
       </div>
+
+      {/* Show More Button */}
+      {visibleCount < sortedSpots.length && (
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={handleShowMore}
+            className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          >
+            Show More
+          </button>
+        </div>
+      )}
     </div>
   );
 };

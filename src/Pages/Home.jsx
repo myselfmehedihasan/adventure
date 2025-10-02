@@ -1,12 +1,15 @@
 import React from "react";
 import { useLoaderData } from "react-router-dom";
 import SimpleSlider from "../Components/SimpleSlider";
-import AllTouristsSpot from "./AllTouristsSpot";
 import { motion, useScroll } from "motion/react";
 import State from "../Components/State";
 import ContactForm from "../Components/ContactForm";
 import Faq from "../Components/Faq";
 import FeaturesSection from "../Components/FeaturesSection";
+
+import CarouselCards from "../Components/CarouselCards";
+import Country from "../Components/Country";
+import AllTouristsSpot from "../Components/AllTouristsSpot";
 
 const Home = () => {
   const allSpot = useLoaderData();
@@ -44,12 +47,16 @@ const Home = () => {
         <FeaturesSection></FeaturesSection>
 
         {/* FAQ Section */}
-       <Faq></Faq>
+        <Faq></Faq>
 
         {/* stat section */}
 
         <State></State>
         {/* Contact */}
+
+        <section id="country" className="">
+          <Country />
+        </section>
 
         <ContactForm></ContactForm>
       </div>

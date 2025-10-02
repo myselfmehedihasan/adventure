@@ -15,13 +15,17 @@ import PrivateRoute from "./Private/PrivateRoute.jsx";
 import SpotDetails from "./Pages/SpotDetails.jsx";
 
 import { motion, AnimatePresence } from "framer-motion";
+import Country from "./Components/Country.jsx";
+import AddCountry from "./Components/AddCountry.jsx";
+import AnimatedLoginForm from "./Components/AnimatedLoginForm.jsx";
+import CountrySpots from "./Components/CountrySpots.jsx";
 
 const withTransition = (Component) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -20 }}
-    transition={{ duration: .75 }}
+    transition={{ duration: 0.75 }}
   >
     <Component />
   </motion.div>
@@ -43,27 +47,15 @@ const router = createBrowserRouter([
       },
       {
         path: "/spots/:id",
-        element: (
-          <PrivateRoute>
-            {withTransition(SpotDetails)}
-          </PrivateRoute>
-        ),
+        element: <PrivateRoute>{withTransition(SpotDetails)}</PrivateRoute>,
       },
       {
         path: "/addtouristsspot",
-        element: (
-          <PrivateRoute>
-            {withTransition(AddTouristsSpot)}
-          </PrivateRoute>
-        ),
+        element: <PrivateRoute>{withTransition(AddTouristsSpot)}</PrivateRoute>,
       },
       {
         path: "/mylist",
-        element: (
-          <PrivateRoute>
-            {withTransition(MyList)}
-          </PrivateRoute>
-        ),
+        element: <PrivateRoute>{withTransition(MyList)}</PrivateRoute>,
       },
       {
         path: "login",
@@ -72,6 +64,19 @@ const router = createBrowserRouter([
       {
         path: "register",
         element: withTransition(Register),
+      },
+      {
+        path: "country",
+        element: withTransition(Country),
+      },
+      {
+        path: "country/:countryName",
+        element: withTransition(CountrySpots), // or rename to CountrySpots.jsx
+      },
+      {
+        path: "addcountry",
+
+        element: <PrivateRoute>{withTransition(AddCountry)}</PrivateRoute>,
       },
     ],
   },

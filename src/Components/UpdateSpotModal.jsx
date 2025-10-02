@@ -1,4 +1,3 @@
-// 📂 src/Components/UpdateSpotModal.jsx
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
@@ -15,9 +14,11 @@ const UpdateSpotModal = ({ spot, isOpen, onClose, onUpdate }) => {
     totaVisitorsPerYear: "",
   });
 
+  const [originalData, setOriginalData] = useState({});
+
   useEffect(() => {
     if (spot) {
-      setFormData({
+      const initData = {
         image: spot.image || "",
         tourists_spot_name: spot.tourists_spot_name || "",
         country_Name: spot.country_Name || "",
@@ -27,7 +28,9 @@ const UpdateSpotModal = ({ spot, isOpen, onClose, onUpdate }) => {
         seasonality: spot.seasonality || "",
         travel_time: spot.travel_time || "",
         totaVisitorsPerYear: spot.totaVisitorsPerYear || "",
-      });
+      };
+      setFormData(initData);
+      setOriginalData(initData);
     }
   }, [spot]);
 
@@ -47,7 +50,6 @@ const UpdateSpotModal = ({ spot, isOpen, onClose, onUpdate }) => {
 
       if (!res.ok) throw new Error("Failed to update spot");
 
-      const data = await res.json();
       onUpdate({ ...spot, ...formData });
       Swal.fire("Updated!", "Tourist spot updated successfully.", "success");
       onClose();
@@ -55,6 +57,11 @@ const UpdateSpotModal = ({ spot, isOpen, onClose, onUpdate }) => {
       console.error(err);
       Swal.fire("Error", "Failed to update spot", "error");
     }
+  };
+
+  // ✅ Check if form has any changes
+  const isFormChanged = () => {
+    return Object.keys(formData).some((key) => formData[key] !== originalData[key]);
   };
 
   if (!isOpen) return null;
@@ -179,7 +186,12 @@ const UpdateSpotModal = ({ spot, isOpen, onClose, onUpdate }) => {
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+              disabled={!isFormChanged()}
+              className={`px-5 py-2 rounded-md text-white font-semibold ${
+                isFormChanged()
+                  ? "bg-blue-600 hover:bg-blue-700"
+                  : "bg-gray-400 cursor-not-allowed"
+              }`}
             >
               Update
             </button>

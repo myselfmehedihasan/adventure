@@ -4,92 +4,92 @@ import { motion } from "framer-motion";
 
 const State = () => {
   return (
-    <section className="relative">
-      <div className="stats shadow-lg w-full mx-auto bg-[url('/src/assets/Slider/slider1.jpg')] bg-cover bg-center bg-no-repeat py-16 sm:py-20 p-4 sm:p-6 mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-
-      {/* Gradient overlay */}
-    <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-black/20"></div>
+    <section className="p-6 my-6 dark:bg-gray-100 dark:text-gray-800 max-w-7xl mx-auto">
+      <div className="container grid grid-cols-1 gap-6 mx-auto sm:grid-cols-2 xl:grid-cols-4">
         
         {/* Total Destinations */}
         <motion.div
-          className="stat text-center sm:text-left"
+          className="flex p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-50 dark:text-gray-800"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.9, delay: 0.5 }}
         >
-          <div className="stat-figure text-white mb-2">
-            <svg className="inline-block h-8 w-8 sm:h-10 sm:w-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 2L2 7l10 5 10-5-10-5zm0 13l10-5v10l-10 5-10-5V10l10 5z" />
+          <div className="flex justify-center p-2 align-middle rounded-lg sm:p-4 dark:bg-black/60">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="h-9 w-9 dark:text-gray-100" viewBox="0 0 24 24">
+              <path d="M12 2L2 7l10 5 10-5-10-5zm0 13l10-5v10l-10 5-10-5V10l10 5z" />
             </svg>
           </div>
-          <div className="stat-title text-lg sm:text-xl font-semibold">Total Destinations</div>
-          <div className="stat-value text-white text-2xl sm:text-3xl font-bold">
-            <CountUp end={120} duration={2} />+
+          <div className="flex flex-col justify-center">
+            <p className="text-3xl font-semibold leading-none">
+              <CountUp end={120} duration={2} />+
+            </p>
+            <p className="capitalize">Total Destinations</p>
           </div>
-          <div className="stat-desc text-sm sm:text-lg">Explore across 6 countries</div>
         </motion.div>
 
         {/* Happy Travelers */}
         <motion.div
-          className="stat text-center sm:text-left"
+          className="flex p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-50 dark:text-gray-800"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <div className="stat-figure text-green-500 mb-2">
-            <svg className="inline-block h-8 w-8 sm:h-10 sm:w-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+          <div className="flex justify-center p-2 align-middle rounded-lg sm:p-4 dark:bg-black/60">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="h-9 w-9 dark:text-gray-100" viewBox="0 0 24 24">
+              <path d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <div className="stat-title text-lg sm:text-xl font-semibold">Happy Travelers</div>
-          <div className="stat-value text-green-400 text-2xl sm:text-3xl font-bold">
-            <CountUp end={15000} duration={2} separator="," />+
+          <div className="flex flex-col justify-center">
+            <p className="text-3xl font-semibold leading-none text-green-500">
+              <CountUp end={15000} duration={2} separator="," />+
+            </p>
+            <p className="capitalize">Happy Travelers</p>
           </div>
-          <div className="stat-desc text-sm sm:text-lg">Loved our tours this year</div>
         </motion.div>
 
         {/* Positive Reviews */}
         <motion.div
-          className="stat text-center sm:text-left"
+          className="flex p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-50 dark:text-gray-800"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <div className="stat-figure text-white mb-2">
-            <svg className="inline-block h-8 w-8 sm:h-10 sm:w-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 17l-5 3 2-6-5-4h6l2-6 2 6h6l-5 4 2 6-5-3z" />
+          <div className="flex justify-center p-2 align-middle rounded-lg sm:p-4 dark:bg-black/60">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="h-9 w-9 dark:text-gray-100" viewBox="0 0 24 24">
+              <path d="M12 17l-5 3 2-6-5-4h6l2-6 2 6h6l-5 4 2 6-5-3z" />
             </svg>
           </div>
-          <div className="stat-title text-green-500 text-lg sm:text-xl font-semibold">Positive Reviews</div>
-          <div className="stat-value text-white text-2xl sm:text-3xl font-bold">
-            <CountUp end={4.9} decimals={1} duration={2} />/5
+          <div className="flex flex-col justify-center">
+            <p className="text-3xl font-semibold leading-none">
+              <CountUp end={4.9} decimals={1} duration={2} />/5
+            </p>
+            <p className="capitalize">Positive Reviews</p>
           </div>
-          <div className="stat-desc text-sm sm:text-lg">Based on 3.5K reviews</div>
         </motion.div>
 
         {/* Tours Completed */}
         <motion.div
-          className="stat text-center sm:text-left"
+          className="flex p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-50 dark:text-gray-800"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
-          <div className="stat-figure text-green-300 mb-2">
-            <svg className="inline-block h-8 w-8 sm:h-10 sm:w-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-6h6v6m2 0a2 2 0 002-2v-5a2 2 0 00-2-2h-1V7a4 4 0 00-8 0v1H7a2 2 0 00-2 2v5a2 2 0 002 2h10z" />
+          <div className="flex justify-center p-2 align-middle rounded-lg sm:p-4 dark:bg-black/60">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="h-9 w-9 dark:text-gray-100" viewBox="0 0 24 24">
+              <path d="M9 17v-6h6v6m2 0a2 2 0 002-2v-5a2 2 0 00-2-2h-1V7a4 4 0 00-8 0v1H7a2 2 0 00-2 2v5a2 2 0 002 2h10z" />
             </svg>
           </div>
-          <div className="stat-title text-white text-lg sm:text-xl font-semibold">Tours Completed</div>
-          <div className="stat-value text-green-300 text-2xl sm:text-3xl font-bold">
-            <CountUp end={850} duration={2} />+
+          <div className="flex flex-col justify-center">
+            <p className="text-3xl font-semibold leading-none text-green-400">
+              <CountUp end={850} duration={2} />+
+            </p>
+            <p className="capitalize">Tours Completed</p>
           </div>
-          <div className="stat-desc text-sm sm:text-lg">Successful adventures worldwide</div>
         </motion.div>
-
       </div>
     </section>
   );

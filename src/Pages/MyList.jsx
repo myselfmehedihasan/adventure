@@ -60,7 +60,7 @@ const MyList = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto mt-20 p-4">
+    <div className="max-w-6xl mx-auto mt-20 p-4 bg-yellow-50">
       <h2 className="text-3xl font-bold text-center mb-6">
         My Tourist Spots List
       </h2>
