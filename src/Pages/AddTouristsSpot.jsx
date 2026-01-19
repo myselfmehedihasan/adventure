@@ -29,7 +29,7 @@ const AddTouristsSpot = () => {
     data.user_email = user?.email;
     data.user_name = user?.displayName;
 
-    fetch("http://localhost:5000/addtouristspot", {
+    fetch("https://adventure-server-ten.vercel.app/addtouristspot", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(data),

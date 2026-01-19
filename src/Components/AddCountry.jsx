@@ -13,7 +13,7 @@ const AddCountry = () => {
   } = useForm();
 
   const onSubmit = (data) => {
-    fetch("http://localhost:5000/countries", {
+    fetch("https://adventure-server-ten.vercel.app/countries", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(data),

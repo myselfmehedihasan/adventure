@@ -31,7 +31,7 @@ const SpotDetails = () => {
 
   // -------------------- Fetch Spot Data --------------------
   useEffect(() => {
-    fetch(`http://localhost:5000/spots/${id}`)
+    fetch(`https://adventure-server-ten.vercel.app/spots/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setSpot(data);

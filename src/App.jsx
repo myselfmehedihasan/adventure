@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
-import Navbar from "./Components/Navbar";
-import Footer from "./Components/Footer";
-import Pattern from "./Components/Pattern";
+import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
+import Footer from "./Components/Footer";
+import Navbar from "./Components/Navbar";
 import ScrollToTop from "./Components/ScrollToTop";
 
 const App = () => {
@@ -20,9 +19,9 @@ const App = () => {
   return (
     <div className="relative min-h-screen">
       {/* Background pattern stays fixed */}
-      <div className="absolute w-full inset-0 -z-10">
+      {/* <div className="absolute w-full inset-0 -z-10">
         <Pattern />
-      </div>
+      </div> */}
 
       {/* ScrollToTop ensures page starts at top on route change */}
       <ScrollToTop />

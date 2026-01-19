@@ -42,7 +42,7 @@ const UpdateSpotModal = ({ spot, isOpen, onClose, onUpdate }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:5000/myspots/${spot._id}`, {
+      const res = await fetch(`https://adventure-server-ten.vercel.app/myspots/${spot._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

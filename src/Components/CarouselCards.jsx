@@ -12,7 +12,7 @@ export default function CarouselCards() {
 
   // ✅ Fetch countries from backend
   useEffect(() => {
-    fetch("http://localhost:5000/countries")
+    fetch("https://adventure-server-ten.vercel.app/countries")
       .then((res) => res.json())
       .then((data) => setCountries(data))
       .catch((err) => console.error("Error fetching countries:", err));

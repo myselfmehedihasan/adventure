@@ -10,6 +10,7 @@ const auth = getAuth(app);
 const Navbar = () => {
   const [isScrolled, setScrolled] = useState(false); // Track if page is scrolled to shrink navbar
   const [activeSection, setActiveSection] = useState("home"); // Track active section on home page
+  const [scrollToSectionId, setScrollToSectionId] = useState(null); // Track section to scroll to after navigation
   const { user } = useContext(AuthContext); // Get current user from Auth Context
 
   const location = useLocation();
@@ -40,6 +41,14 @@ const Navbar = () => {
     sections.forEach((sec) => observer.observe(sec));
     return () => sections.forEach((sec) => observer.unobserve(sec));
   }, [isHome]);
+
+  // Scroll to a specific section after navigation
+  useEffect(() => {
+    if (isHome && scrollToSectionId) {
+      scrollToSection(scrollToSectionId);
+      setScrollToSectionId(null); // Reset after scrolling
+    }
+  }, [isHome, scrollToSectionId]);
 
   // Logout function
   const handleLogout = () => signOut(auth).catch(console.error);
@@ -95,10 +104,11 @@ const Navbar = () => {
           className={navLinkClass("home", "/")}
           onClick={(e) => {
             e.preventDefault();
-            if (isHome) scrollToTop();
-            else {
+            if (isHome) {
+              scrollToTop(); // Scroll to the slider
+            } else {
               navigate("/");
-              setTimeout(() => scrollToTop(), 200);
+              setScrollToSectionId("home"); // Set section to scroll to after navigation
             }
           }}
         >
@@ -113,10 +123,11 @@ const Navbar = () => {
           className={navLinkClass("all-tourist-spot", "/")}
           onClick={(e) => {
             e.preventDefault();
-            if (isHome) scrollToSection("all-tourist-spot");
-            else {
+            if (isHome) {
+              scrollToSection("all-tourist-spot");
+            } else {
               navigate("/");
-              setTimeout(() => scrollToSection("all-tourist-spot"), 200);
+              setScrollToSectionId("all-tourist-spot"); // Set section to scroll to after navigation
             }
           }}
         >
@@ -141,10 +152,11 @@ const Navbar = () => {
           className={navLinkClass("country", "/")}
           onClick={(e) => {
             e.preventDefault();
-            if (isHome) scrollToSection("country");
-            else {
+            if (isHome) {
+              scrollToSection("country");
+            } else {
               navigate("/");
-              setTimeout(() => scrollToSection("country"), 200);
+              setScrollToSectionId("country"); // Set section to scroll to after navigation
             }
           }}
         >
@@ -211,15 +223,16 @@ const Navbar = () => {
             className="ml-2"
             onClick={(e) => {
               e.preventDefault();
-              if (isHome) scrollToTop();
-              else {
+              if (isHome) {
+                scrollToTop();
+              } else {
                 navigate("/");
-                setTimeout(() => scrollToTop(), 200);
+                setScrollToSectionId("home"); // Set section to scroll to after navigation
               }
             }}
           >
             <img
-              src="/src/assets/logo.png"
+              src="https://i.ibb.co.com/cSvdsXcw/logo.png"
               alt="Logo"
               className="transition-all duration-300"
             />

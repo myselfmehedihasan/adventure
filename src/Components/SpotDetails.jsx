@@ -12,7 +12,7 @@ export default function SpotDetails() {
   // ✅ Fetch single spot details
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:5000/spots/${id}`)
+    fetch(`https://adventure-server-ten.vercel.app/spots/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setSpot(data);

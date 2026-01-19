@@ -13,7 +13,7 @@ const MyList = () => {
   // Fetch spots for logged-in user
   useEffect(() => {
     if (user?.email) {
-      fetch(`http://localhost:5000/myspots?email=${user.email}`)
+      fetch(`https://adventure-server-ten.vercel.app/myspots?email=${user.email}`)
         .then((res) => res.json())
         .then((data) => setMySpots(data))
         .catch((err) => console.error("Error fetching spots:", err));
@@ -30,7 +30,7 @@ const MyList = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/myspots/${id}`, { method: "DELETE" })
+        fetch(`https://adventure-server-ten.vercel.app/myspots/${id}`, { method: "DELETE" })
           .then((res) => res.json())
           .then((data) => {
             if (data.deletedCount > 0) {

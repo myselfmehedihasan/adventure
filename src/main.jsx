@@ -39,7 +39,7 @@ const router = createBrowserRouter([
       {
         index: true,
         loader: async () => {
-          const res = await fetch("http://localhost:5000/alltouristspot");
+          const res = await fetch("https://adventure-server-ten.vercel.app/alltouristspot");
           const data = await res.json();
           return Array.isArray(data) ? data : data?.spots || [];
         },

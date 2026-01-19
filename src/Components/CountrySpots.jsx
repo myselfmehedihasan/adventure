@@ -14,7 +14,7 @@ export default function Country() {
   };
 
   useEffect(() => {
-    fetch(`http://localhost:5000/spots/country/${countryName}`)
+    fetch(`https://adventure-server-ten.vercel.app/spots/country/${countryName}`)
       .then((res) => res.json())
       .then((data) => {
         setSpots(data);
